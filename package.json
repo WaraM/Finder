@@ -1,0 +1,27 @@
+{
+  "name": "finder",
+  "version": "1.0.0",
+  "description": "\u0016Fostering employee integration and team cohesion",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Maxime Cougourdan",
+  "license": "ISC",
+  "dependencies": {
+	  "bcryptjs": "*",
+	  "body-parser": "*",
+	  "connect-flash": "*",
+	  "cookie-parser": "^1.4.1",
+	  "express": "*",
+	  "express-handlebars": "*",
+	  "express-messages": "*",
+	  "express-session": "*",
+	  "express-validator": "*",
+	  "mongodb": "*",
+	  "mongoose": "*",
+	  "passport": "*",
+	  "passport-http": "*",
+	  "passport-local": "*"
+  }
+}
