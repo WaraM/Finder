@@ -6,12 +6,12 @@ var User = require('../models/Users/User');
 
 //Register
 router.get('/register', function(req, res) {
-	res.render('register');
+	res.send(200);
 });
 
 //Login
 router.get('/login', function(req, res) {
-	res.render('login');
+	res.send(200);
 });
 
 //Register
@@ -32,8 +32,7 @@ router.post('/register', function(req, res) {
 
 	var errors = req.validationErrors();
 	if(errors) {
-		res.render('register', {
-			errors:errors
+		res.send(400);
 		});
 	} else {
 		var newUser = new User({
@@ -42,12 +41,9 @@ router.post('/register', function(req, res) {
 			username: username,
 			password: password
 		});
-
 		User.createUser(newUser, function(err, user) {
 			if(err) throw err;
-			console.log(user);
 		});
-		req.flash('succes_msg', 'You are registered');
 		res.redirect('login');
 	}
 });
@@ -85,7 +81,6 @@ router.post('/login',
 
 router.get('/logout', function(req, res) {
 	req.logout();
-	req.flash('succes_msg', 'You are logged out');
 	res.redirect('/users/login');
 })
 module.exports = router;
