@@ -22,6 +22,7 @@ var LabelSchema = mongoose.Schema({
 });
 
 var Label = module.exports = mongoose.model('Label', LabelSchema);
+module.exports.schema = function () { return LabelSchema; }
 
 module.exports.createLabel = function(newLabel, callback){
     newLabel.save(callback);
