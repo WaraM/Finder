@@ -14,22 +14,35 @@ function ensureAuthenticated(req, res, next){
 router.get('/:id', ensureAuthenticated, function(req, res){
     return Agency.findOne({_id: req.params.id},
         function(err, agency){
-            if (err || agency == null) return res.sendStatus(404);
+            if (err) throw err;
+            if (agency == null) return res.sendStatus(404);
+
             return res.json(agency);
         }
      );
 });
 
 router.delete('/:id', ensureAuthenticated, function(req, res){
-    return Agency.findOneAndRemove({_id: req.params.id},
+    Agency.findOne({_id: req.params.id},
         function(err, agency){
             if (err) throw err;
-            return res.sendStatus(204);
+            if (agency == null) return res.sendStatus(204);
+
+            if (Agency.isUserAllowToAdministrate(agency, req.user)) {
+                Agency.remove(agency, function(err, agency) {
+                    if (err) throw err;
+                });
+                return res.sendStatus(204);
+            } else {
+                return res.sendStatus(401);
+            }
         }
     );
 });
 
 router.post('/create', ensureAuthenticated, function(req, res){
+    if (!req.user.isSuperAdmin) res.sendStatus(401);
+
     var name = req.body.name;
 	var fonction = req.body.fonction;
     var intitule = req.body.intitule;

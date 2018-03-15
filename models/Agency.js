@@ -16,6 +16,9 @@ var AgencySchema = new mongoose.Schema({
     },
     panorama: {
         type: String
+    },
+    administeredBy: {
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
     }
 });
 
@@ -23,4 +26,8 @@ var Agency = module.exports = mongoose.model('Agency', AgencySchema);
 
 module.exports.createAgency = function(newAgency, callback){
     newAgency.save(callback);
+}
+
+module.exports.isUserAllowToAdministrate = function(agency, user){
+    return agency.administeredBy.indexOf(user._id) != -1;
 }

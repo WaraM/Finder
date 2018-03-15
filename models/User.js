@@ -30,14 +30,8 @@ var UserSchema = new mongoose.Schema({
 	name: {
 		type: String
 	},
-    adminForAgency: {
-	    type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Agency'}]
-    },
-    assignedToPole: {
-	    type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Pole'}]
-    },
-    assignedToProject: {
-	    type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Project'}]
+    isSuperAdmin: {
+	    type: Boolean
     }
 });
 
