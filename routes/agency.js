@@ -28,7 +28,7 @@ router.delete('/:id', ensureAuthenticated, function(req, res){
             if (err) throw err;
             if (agency == null) return res.sendStatus(204);
 
-            if (Agency.isUserAllowToAdministrate(agency, req.user)) {
+            if (Agency.isUserAllowToAdministrate(agency, req.user) || req.user.isSuperAdmin) {
                 Agency.remove(agency, function(err, agency) {
                     if (err) throw err;
                 });
