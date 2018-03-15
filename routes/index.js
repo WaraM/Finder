@@ -16,13 +16,10 @@ function ensureAuthenticated(req, res, next) {
 }
 
 //Get Homepage
-router.get('/', ensureAuthenticated, function(req, res) {
-    console.log(req.user.username + " accessing root page");
-    
+router.get('/', ensureAuthenticated, function(req, res){
     return Agency.find({}, 
         function(err, agencies){
             if (err) errHandler(err);
-            console.log("returning agencies: " + agencies);
             return res.json(agencies);
         }
     );    

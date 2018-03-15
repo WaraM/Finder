@@ -5,6 +5,6 @@ function errHandler(err) {
     return console.error(err.message);
 }
 
-module.export = {
+module.exports = {
     errHandler: errHandler
 }

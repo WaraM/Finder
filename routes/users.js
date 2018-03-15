@@ -9,7 +9,7 @@ function ensureAuthenticated(req, res, next) {
     if(req.isAuthenticated()) {
         return next();
     } else {
-        res.redirect('/users/login');
+        res.redirect('login');
     }
 }
 
@@ -59,14 +59,17 @@ router.post('/login',
 	passport.authenticate('local', {successRedirect:'/', failureRedirect: 'login'}),
 	function(req, res) {
 		res.redirect('/');
-});
+	}
+);
 
 //Logout : GET
-router.get('/logout', ensureAuthenticated, function(req, res) {
-    console.log(req.user.username + " is now disconnected");
-    req.logout();
-    req.session.destroy();        
-	res.redirect('/users/login');
-});
+router.get('/logout', ensureAuthenticated,
+	function(req, res) {
+    	console.log(req.user.username + " is now disconnected");
+    	req.logout();
+    	req.session.destroy();
+	    res.redirect('login');
+	}
+);
 
 module.exports = router;
