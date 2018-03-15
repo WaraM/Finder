@@ -9,7 +9,7 @@ var Right = require('Right');
  */
 
 //Role Schema
-var RoleSchema = mongoose.Schema({
+var RoleSchema = new mongoose.Schema({
     name: {
         type: String,
         index: true

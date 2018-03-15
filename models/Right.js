@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
  */
 
 //Right Schema
-var RightSchema = mongoose.Schema({
+var RightSchema = new mongoose.Schema({
    name: {
        type: String,
        index: true,

@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 var extend = require('mongoose-extend-schema');
 
-var Label = require('models/Label/Label');
-var User = require('models/Users/User.js')
+var Label = require('Label');
+var User = require('../User.js')
 
 /**
  *    UserLabel

@@ -1,6 +1,10 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
 
+var Agency = require('../models/Agency');
+//var Pole = require('Pole');
+//var Project = require('Project');
+
 /**
  *     User
  * username
@@ -11,9 +15,8 @@ var bcrypt = require('bcryptjs');
  * photo
  */
 
-
 //User Schema
-var UserSchema = mongoose.Schema({
+var UserSchema = new mongoose.Schema({
 	username: {
 		type: String,
 		index: true
@@ -26,11 +29,19 @@ var UserSchema = mongoose.Schema({
 	},
 	name: {
 		type: String
-	}
+	},
+    adminForAgency: {
+	    type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Agency'}]
+    }/*,
+    assignedToPole: {
+	    type: [Pole]
+    },
+    assignedToProject: {
+	    type: [Project]
+    }*/
 });
 
 var User = module.exports = mongoose.model('User', UserSchema);
-module.exports.schema = function () { return UserSchema; }
 
 module.exports.createUser = function(newUser, callback){
 	bcrypt.genSalt(10, function(err, salt) {
@@ -49,6 +60,7 @@ module.exports.getUserByUsername = function(username, callback) {
 module.exports.getUserById = function(id, callback) {
 	User.findById(id, callback);
 }
+
 module.exports.comparePassword = function(candidatePassword, hash, callback){
 	bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
     	if(err) throw err;
