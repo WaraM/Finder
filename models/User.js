@@ -31,7 +31,8 @@ var UserSchema = new mongoose.Schema({
 		type: String
 	},
     isSuperAdmin: {
-	    type: Boolean
+	    type: Boolean,
+		default : false
     }
 });
 

@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var Agency = require('../models/Agency');
+var User = require('../models/User');
 
 function ensureAuthenticated(req, res, next){
     if(req.isAuthenticated()) {
@@ -39,6 +40,28 @@ router.delete('/:id', ensureAuthenticated, function(req, res){
         }
     );
 });
+
+router.put('/:id/assign/:user', ensureAuthenticated, function(req, res) {
+    if (req.user.isSuperAdmin) {
+        Agency.findOne({_id : req.params.id},
+            function(err, agency) {
+                if (err) throw err;
+                if (agency == null) return res.sendStatus(204);
+                User.findOne({_id : req.params.user},
+                    function(err, user) {
+                        if (err) throw err;
+                        if (user == null) return res.sendStatus(204);
+                        Agency.addAdministrator(agency, user);
+                    }
+                );
+            }
+        );
+        res.redirect('/:id');
+    } else {
+        res.sendStatus(403);
+    }
+});
+
 
 router.post('/create', ensureAuthenticated, function(req, res){
     if (!req.user.isSuperAdmin) res.sendStatus(401);
