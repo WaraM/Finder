@@ -1,37 +1,17 @@
 var express = require('express');
 var router = express.Router();
-var passport = require('passport');
-var localStrategy = require('passport-local').Strategy;
+
+var passport = require('../utilities/passport');
+
 var User = require('../models/User');
 
-//Passport
-passport.use(new localStrategy(function(username, password, done) {
-    User.getUserByUsername(username, function(err, user) {
-		if(err) throw err;
-		if(!user) {
-            console.log(username + " doesn't exist");
-			return done(null, false, {message: 'Unknown User'});
-		}
-	    User.comparePassword(password, user.password, function(err, isMatch) {
-		    if(err) throw err;
-		    if(isMatch) {                
-                console.log(username + " is now connected");
-		    	return done(null, user);
-		    } else {
-                console.log(username + " wrong password");
-		    	return done(null, false, {message: 'Invalid Password'});
-		    }
-	    });
-	});
-}));
-passport.serializeUser(function(user, done) {
-	done(null, user.id);
-});
-passport.deserializeUser(function(id, done) {
-	User.getUserById(id, function(err, user) {
-		done(err, user);
-	});
-});
+function ensureAuthenticated(req, res, next) {
+    if(req.isAuthenticated()) {
+        return next();
+    } else {
+        res.redirect('/users/login');
+    }
+}
 
 //Register : GET
 router.get('/register', function(req, res) {
@@ -82,8 +62,10 @@ router.post('/login',
 });
 
 //Logout : GET
-router.get('/logout', function(req, res) {
-	req.logout();
+router.get('/logout', ensureAuthenticated, function(req, res) {
+    console.log(req.user.username + " is now disconnected");
+    req.logout();
+    req.session.destroy();        
 	res.redirect('/users/login');
 });
 

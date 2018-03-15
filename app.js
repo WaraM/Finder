@@ -10,6 +10,7 @@ var passport = require('passport');
 var localStrategy = require('passport-local').Strategy;
 
 var mongo = require('mongodb');
+var mongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/finder');
 
@@ -17,14 +18,10 @@ var db = mongoose.connection;
 
 var routes = require('./routes/index.js');
 var users = require('./routes/users.js');
+var agency = require('./routes/agency.js');
 
 // init
 var app = express();
-
-//View
-app.set('views', path.join(__dirname, 'views'));
-app.engine('handlebars', exphbs({defaultLayout:'layout'}));
-app.set('view engine', 'handlebars');
 
 //BodyParser Middleware
 app.use(bodyParser.json());
@@ -36,9 +33,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Express Session
 app.use(session({
+    name: 'finder.sess',
+    store: new mongoStore({
+        mongooseConnection: mongoose.connection,
+        touchAfter: 24*3600
+    }),
     secret: 'secret',
     saveUninitialized: true,
-    resave: true
+    resave: true,
+    cookie: { maxAge: 1000*60*15 }
 }));
 
 //Passport init
@@ -76,6 +79,7 @@ app.use(function(req, res, next) {
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/agency', agency);
 
 //Set Port
 app.set('port', (process.env.PORT || 2727));

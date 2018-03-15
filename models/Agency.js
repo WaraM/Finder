@@ -2,6 +2,9 @@ var mongoose = require('mongoose');
 
 //Agency Schema
 var AgencySchema = new mongoose.Schema({
+    name: {
+        type: String
+    },
     fonction: {
         type: String
     },
