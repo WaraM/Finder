@@ -2,8 +2,8 @@ var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
 
 var Agency = require('../models/Agency');
-//var Pole = require('Pole');
-//var Project = require('Project');
+var Pole = require('../models/Pole');
+var Project = require('../models/Project');
 
 /**
  *     User
@@ -32,13 +32,13 @@ var UserSchema = new mongoose.Schema({
 	},
     adminForAgency: {
 	    type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Agency'}]
-    }/*,
+    },
     assignedToPole: {
-	    type: [Pole]
+	    type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Pole'}]
     },
     assignedToProject: {
-	    type: [Project]
-    }*/
+	    type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Project'}]
+    }
 });
 
 var User = module.exports = mongoose.model('User', UserSchema);
