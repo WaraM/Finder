@@ -7,7 +7,7 @@ function ensureAuthenticated(req, res, next){
     if(req.isAuthenticated()) {
         return next();
     } else {
-        return res.redirect('/users/login');
+        return res.redirect(401,'/login');
     }
 }
 
@@ -33,11 +33,11 @@ router.post('/create', ensureAuthenticated, function(req, res){
     var name = req.body.name;
 	var fonction = req.body.fonction;
     var intitule = req.body.intitule;
-    
+
     req.checkBody('name', 'Name is required').notEmpty();
     req.checkBody('fonction', 'Fonction is required').notEmpty();
     req.checkBody('intitule', 'Intitule is required').notEmpty();
-    
+
     var errors = req.validationErrors();
     if (errors){
         res.sendStatus(400);

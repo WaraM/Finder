@@ -9,7 +9,7 @@ function ensureAuthenticated(req, res, next) {
     if(req.isAuthenticated()) {
         return next();
     } else {
-        res.redirect('login');
+        res.redirect(401,'/login');
     }
 }
 
@@ -35,7 +35,7 @@ router.post('/register', function(req, res) {
 
 	var errors = req.validationErrors();
 	if(errors) {
-		res.send(400);
+		res.sendStatus(400);
 	} else {
 		var newUser = new User({
 			name: name,
@@ -54,6 +54,7 @@ router.post('/register', function(req, res) {
 router.get('/login', function(req, res) {
 	res.sendStatus(200);
 });
+
 //Login : POST
 router.post('/login',
 	passport.authenticate('local', {successRedirect:'/', failureRedirect: 'login'}),
