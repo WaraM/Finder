@@ -12,9 +12,12 @@ var localStrategy = require('passport-local').Strategy;
 var mongo = require('mongodb');
 var mongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/finder');
+mongoose.connect('mongodb://admin:admin@ds235328.mlab.com:35328/finder');
+//mongoose.connect('mongodb://localhost/finder');
 
 var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Database connection error'));
+db.on('open', function() { console.log("The database is now connected"); });
 
 var routes = require('./routes/index.js');
 var users = require('./routes/users.js');
