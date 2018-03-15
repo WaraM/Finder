@@ -1,31 +1,32 @@
 var express = require('express');
 var router = express.Router();
 
-var utilities = require('../utilities/utils');
-var passport = require('../utilities/passport');
-
 var Agency = require('../models/Agency');
 
-var errHandler = utilities.errHandler;
-
-function ensureAuthenticated(req, res, next) {
+function ensureAuthenticated(req, res, next){
     if(req.isAuthenticated()) {
         return next();
     } else {
-        res.redirect('/users/login');
+        return res.redirect('/users/login');
     }
 }
 
 router.get('/:id', ensureAuthenticated, function(req, res){
     return Agency.findOne({_id: req.params.id},
         function(err, agency){
-            if (err) {
-                errHandler(err);
-                res.sendStatus(404);
-            }
+            if (err || agency == null) return res.sendStatus(404);
             return res.json(agency);
         }
      );
+});
+
+router.delete('/:id', ensureAuthenticated, function(req, res){
+    return Agency.findOneAndRemove({_id: req.params.id},
+        function(err, agency){
+            if (err) throw err;
+            return res.sendStatus(204);
+        }
+    );
 });
 
 router.post('/create', ensureAuthenticated, function(req, res){
