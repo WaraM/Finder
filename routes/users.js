@@ -9,7 +9,7 @@ function ensureAuthenticated(req, res, next) {
     if(req.isAuthenticated()) {
         return next();
     } else {
-        res.redirect(401,'/login');
+        res.sendStatus(401);
     }
 }
 
@@ -50,16 +50,11 @@ router.post('/register', function(req, res) {
 	}
 });
 
-//Login : GET
-router.get('/login', function(req, res) {
-	res.sendStatus(200);
-});
-
 //Login : POST
 router.post('/login',
 	passport.authenticate('local', {successRedirect:'/', failureRedirect: 'login'}),
 	function(req, res) {
-		res.redirect('/');
+		res.sendStatus(200);
 	}
 );
 
