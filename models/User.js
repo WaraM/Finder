@@ -32,7 +32,7 @@ var UserSchema = new mongoose.Schema({
 	},
     isSuperAdmin: {
 	    type: Boolean,
-		default : false
+        default: false
     }
 });
 
