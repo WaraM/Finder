@@ -50,6 +50,56 @@ router.delete('/:id', ensureAuthenticated, function(req, res){
     );
 });
 
+router.put('/:id', ensureAuthenticated, function(req, res) {
+    Agency.findOne({_id: req.params.id},
+        function(err, agency){
+            if (err) throw err;
+            if (agency == null) return res.sendStatus(404);
+
+            if (Agency.isUserAllowToAdministrate(agency, req.user) || req.user.isSuperAdmin) {
+
+                var name = req.body.name;
+                var fonction = req.body.fonction;
+                var intitule = req.body.intitule;
+                var lat = req.body.latitude;
+                var lng = req.body.longitude;
+                var country = req.body.country;
+                var city = req.body.city;
+
+                req.checkBody('name', 'Name is required').notEmpty();
+                req.checkBody('fonction', 'Fonction is required').notEmpty();
+                req.checkBody('intitule', 'Intitule is required').notEmpty();
+                req.checkBody('latitude', 'Latitude is required').notEmpty();
+                req.checkBody('longitude', 'Longitude is required').notEmpty();
+                req.checkBody('country', 'Country is required').notEmpty();
+                req.checkBody('city', 'City is required').notEmpty();
+
+                var errors = req.validationErrors();
+                if (errors){
+                    return res.sendStatus(400);
+                } else {
+                    agency.name = name;
+                    agency.fonction = fonction;
+                    agency.intitule = intitule;
+                    agency.photo = "test";
+                    agency.panorama = "test";
+                    agency.latitude = lat;
+                    agency.longitude = lng;
+                    agency.country = country;
+                    agency.city = city;
+
+                    agency.save(function(err){
+                        if (err) throw err;
+                    });
+                    return res.sendStatus(204);
+                }
+            } else {
+                return res.sendStatus(401);
+            }
+        }
+    );
+});
+
 router.put('/:id/assign/:user', ensureAuthenticated, function(req, res) {
     if (req.user.isSuperAdmin) {
         Agency.findOne({_id : req.params.id},
@@ -79,12 +129,16 @@ router.post('/create', ensureAuthenticated, function(req, res){
     var intitule = req.body.intitule;
     var lat = req.body.latitude;
     var lng = req.body.longitude;
+    var country = req.body.country;
+    var city = req.body.city;
 
     req.checkBody('name', 'Name is required').notEmpty();
     req.checkBody('fonction', 'Fonction is required').notEmpty();
     req.checkBody('intitule', 'Intitule is required').notEmpty();
     req.checkBody('latitude', 'Latitude is required').notEmpty();
     req.checkBody('longitude', 'Longitude is required').notEmpty();
+    req.checkBody('country', 'Country is required').notEmpty();
+    req.checkBody('city', 'City is required').notEmpty();
 
     var errors = req.validationErrors();
     if (errors){
@@ -97,7 +151,9 @@ router.post('/create', ensureAuthenticated, function(req, res){
             photo: "test",
             panorama: "test",
             latitude: lat,
-            longitude: lng
+            longitude: lng,
+            country: country,
+            city: city
         });
         Agency.createAgency(newAgency, function(err, agency){
            if (err) throw err;

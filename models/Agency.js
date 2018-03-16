@@ -23,6 +23,12 @@ var AgencySchema = new mongoose.Schema({
     longitude: {
         type: Number
     },
+    country: {
+        type: String
+    },
+    city: {
+        type: String
+    },
     administeredBy: {
         type: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
     }
