@@ -2,6 +2,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var expressValidator = require('express-validator');
 var session = require('express-session');
 var passport = require('passport');
 
@@ -38,6 +39,24 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+//Express Validator
+app.use(expressValidator({
+    errorFormatter: function(param, msg, value) {
+        var namespace = param.split('.'),
+            root = namespace.shift(),
+            formParam = root;
+        while(namespace.length) {
+            formParam += '[' + namespace.shift() + ']';
+        }
+        return {
+            param: formParam,
+            msg: msg,
+            value: value
+        };
+    }
+}));
+
+///Set routes
 app.use('/', index);
 app.use('/user', users);
 app.use('/agency', agency);

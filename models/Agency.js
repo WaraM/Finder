@@ -17,6 +17,12 @@ var AgencySchema = new mongoose.Schema({
     panorama: {
         type: String
     },
+    latitude: {
+        type: Number
+    },
+    longitude: {
+        type: Number
+    },
     administeredBy: {
         type: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
     }

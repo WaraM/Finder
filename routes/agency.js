@@ -77,10 +77,14 @@ router.post('/create', ensureAuthenticated, function(req, res){
     var name = req.body.name;
 	var fonction = req.body.fonction;
     var intitule = req.body.intitule;
+    var lat = req.body.latitude;
+    var lng = req.body.longitude;
 
     req.checkBody('name', 'Name is required').notEmpty();
     req.checkBody('fonction', 'Fonction is required').notEmpty();
     req.checkBody('intitule', 'Intitule is required').notEmpty();
+    req.checkBody('latitude', 'Latitude is required').notEmpty();
+    req.checkBody('longitude', 'Longitude is required').notEmpty();
 
     var errors = req.validationErrors();
     if (errors){
@@ -91,13 +95,14 @@ router.post('/create', ensureAuthenticated, function(req, res){
             fonction: fonction,
             intitule: intitule,
             photo: "test",
-            panorama: "test"
+            panorama: "test",
+            latitude: lat,
+            longitude: lng
         });
         Agency.createAgency(newAgency, function(err, agency){
            if (err) throw err;
         });
-        res.location('/agency/' + newAgency._id);
-        res.sendStatus(201);
+        res.status(201).send({agency: newAgency._id});
     }
 });
 
