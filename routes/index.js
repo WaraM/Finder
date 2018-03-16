@@ -1,28 +1,58 @@
 var express = require('express');
 var router = express.Router();
 
-var utilities = require('../utilities/utils');
+var passport = require('../utilities/passport');
 
-var Agency = require('../models/Agency');
-
-var errHandler = utilities.errHandler;
+var User = require('../models/User');
 
 function ensureAuthenticated(req, res, next) {
     if(req.isAuthenticated()) {
         return next();
     } else {
-        res.redirect(401,'/login');
+        res.sendStatus(401);
     }
 }
 
-//Get Homepage
-router.get('/', ensureAuthenticated, function(req, res){
-    return Agency.find({},
-        function(err, agencies){
-            if (err) errHandler(err);
-            return res.json(agencies);
-        }
-    );
-});
+//Register : POST
+router.post('/register',
+    function(req, res, next) {
+        passport.authenticate('local-signup', function(err, user, info){
+            if (err) res.status(err).send(info);
+            if (!user) res.status(400).send(info);
+            else {
+                req.login(user, function(err){
+                    if (err) throw err;
+                    else res.status(200).send(info);
+                });
+            }
+        })(req, res, next);
+    }
+);
+
+//Login : POST
+router.post('/login',
+    function(req, res, next) {
+        passport.authenticate('local-login', function(err, user, info){
+            if (err) res.status(err).send(info);
+            if (!user) res.status(400).send(info);
+            else {
+                req.login(user, function(err){
+                    if (err) throw err;
+                    else res.status(200).send(info);
+                });
+            }
+        })(req, res, next);
+    }
+);
+
+//Logout : GET
+router.get('/logout', ensureAuthenticated,
+    function(req, res) {
+        console.log(req.user.username + " is now disconnected");
+        req.logout();
+        req.session.destroy();
+        res.sendStatus(200);
+    }
+);
 
 module.exports = router;

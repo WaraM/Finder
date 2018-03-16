@@ -8,9 +8,18 @@ function ensureAuthenticated(req, res, next){
     if(req.isAuthenticated()) {
         return next();
     } else {
-        return res.redirect(401,'/login');
+        return res.sendStatus(401);
     }
 }
+
+router.get('/', ensureAuthenticated, function(req, res){
+    return Agency.find({},
+        function(err, agencies){
+            if (err) throw err;
+            return res.json(agencies);
+        }
+    );
+});
 
 router.get('/:id', ensureAuthenticated, function(req, res){
     return Agency.findOne({_id: req.params.id},
@@ -46,25 +55,24 @@ router.put('/:id/assign/:user', ensureAuthenticated, function(req, res) {
         Agency.findOne({_id : req.params.id},
             function(err, agency) {
                 if (err) throw err;
-                if (agency == null) return res.sendStatus(204);
+                if (agency == null) return res.sendStatus(404);
                 User.findOne({_id : req.params.user},
                     function(err, user) {
                         if (err) throw err;
-                        if (user == null) return res.sendStatus(204);
+                        if (user == null) return res.sendStatus(404);
                         Agency.addAdministrator(agency, user);
                     }
                 );
             }
         );
-        res.redirect('/:id');
+        res.sendStatus(204);
     } else {
         res.sendStatus(403);
     }
 });
 
-
 router.post('/create', ensureAuthenticated, function(req, res){
-    if (!req.user.isSuperAdmin) res.sendStatus(401);
+    if (!req.user.isSuperAdmin) res.sendStatus(403);
 
     var name = req.body.name;
 	var fonction = req.body.fonction;
