@@ -13,7 +13,7 @@ var PlanSchema = new mongoose.Schema({
     }
 });
 
-var Plan = module.exports = mongoose.model('Pole', PoleSchema);
+var Plan = module.exports = mongoose.model('Plan', PlanSchema);
 
 module.exports.createPole = function(newPole, callback){
     newPole.save(callback);

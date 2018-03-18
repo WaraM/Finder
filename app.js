@@ -16,6 +16,9 @@ db.on('open', function() { console.log("The database is now connected"); });
 var index = require('./routes/index.js');
 var users = require('./routes/users.js');
 var agency = require('./routes/agency.js');
+var project = require('./routes/project.js');
+var pole = require('./routes/pole.js');
+var plan = require('./routes/plan.js');
 
 // init
 var app = express();
@@ -60,6 +63,9 @@ app.use(expressValidator({
 app.use('/', index);
 app.use('/user', users);
 app.use('/agency', agency);
+app.use('/project', project);
+app.use('/pole', pole);
+app.use('/plan', plan);
 
 //Set Port
 app.set('port', (process.env.PORT || 2727));
