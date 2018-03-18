@@ -31,6 +31,12 @@ var AgencySchema = new mongoose.Schema({
     },
     administeredBy: {
         type: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
+    },
+    poles: {
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Pole'}]
+    },
+    plans: {
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Plan'}]
     }
 });
 

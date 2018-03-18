@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
-var Agency = require('../models/Agency');
+
+var Project = require('../models/Project');
 
 var PoleSchema = new mongoose.Schema({
     name: {
@@ -8,16 +9,16 @@ var PoleSchema = new mongoose.Schema({
     description: {
         type: String
     },
-    agency: {
-        type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Agency'}]
-    },
     photo: {
         type: String
+    },
+    projects: {
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Project'}]
     }
 });
 
 var Pole = module.exports = mongoose.model('Pole', PoleSchema);
 
 module.exports.createPole = function(newPole, callback){
-    newAgency.save(callback);
+    newPole.save(callback);
 }

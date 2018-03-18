@@ -49,4 +49,31 @@ router.delete('/:id', ensureAuthenticated, function(req, res){
     );
 });
 
+router.post('/create', ensureAuthenticated, function(req, res){
+    if (!req.user.isSuperAdmin) res.sendStatus(403);
+
+    var name = req.body.name;
+    var desc = req.body.description;
+    var photo = req.body.photo;
+
+    req.checkBody('name', 'Name is required').notEmpty();
+    req.checkBody('description', 'Description is required').notEmpty();
+    req.checkBody('photo', 'Photo is required').notEmpty();
+
+    var errors = req.validationErrors();
+    if (errors){
+        res.sendStatus(400);
+    } else {
+        var newPole = new Pole({
+            name: name,
+            description: desc,
+            photo: photo
+        });
+        Pole.createPole(newPole, function(err, pole){
+            if (err) throw err;
+        });
+        res.status(201).send({pole: newPole._id});
+    }
+});
+
 module.exports = router;

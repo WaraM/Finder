@@ -49,4 +49,28 @@ router.delete('/:id', ensureAuthenticated, function(req, res){
     );
 });
 
+router.post('/create', ensureAuthenticated, function(req, res){
+    if (!req.user.isSuperAdmin) res.sendStatus(403);
+
+    var name = req.body.name;
+    var photo = req.body.photo;
+
+    req.checkBody('name', 'Name is required').notEmpty();
+    req.checkBody('photo', 'Photo is required').notEmpty();
+
+    var errors = req.validationErrors();
+    if (errors){
+        res.sendStatus(400);
+    } else {
+        var newPlan = new Plan({
+            name: name,
+            photo: photo
+        });
+        Plan.createPlan(newPlan, function(err, plan){
+            if (err) throw err;
+        });
+        res.status(201).send({plan: newPlan._id});
+    }
+});
+
 module.exports = router;
