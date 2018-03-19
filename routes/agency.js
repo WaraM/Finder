@@ -148,7 +148,7 @@ router.put('/:id/addpole/:pole', ensureAuthenticated, function(req, res) {
 		function(err, agency) {
 			if (err) throw err;
 			if (agency == null) return res.sendStatus(404);
-			if (agency.administeredBy.contains(req.user)) {
+			if (Agency.isUserAllowToAdministrate(agency, req.user)) {
 				Pole.findOne({_id : req.params.pole},
 					function(err,pole) {
 						if (err) throw err;
@@ -168,7 +168,7 @@ router.put('/:id/addplan/:plan', ensureAuthenticated, function(req, res) {
 		function(err, agency) {
 			if (err) throw err;
 			if (agency == null) return res.sendStatus(404);
-			if (agency.administeredBy.contains(req.user)) {
+			if (Agency.isUserAllowToAdministrate(agency, req.user)) {
 				Plan.findOne({_id : req.params.plan},
 					function(err,plan) {
 						if (err) throw err;

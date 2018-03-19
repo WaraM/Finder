@@ -136,7 +136,7 @@ router.put('/:id/addproject/:project', ensureAuthenticated, function(req, res) {
 });
 
 router.post('/create', ensureAuthenticated, function(req, res){
-    if (!Pole.isUserAllowToAdministrate(pole, req.user)) res.sendStatus(403);
+    if (!req.user.isSuperAdmin) res.sendStatus(403);
 
     var name = req.body.name;
     var desc = req.body.description;

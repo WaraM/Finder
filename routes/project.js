@@ -132,7 +132,7 @@ router.put('/:id/addcollaborator/:user', ensureAuthenticated, function(req, res)
         });
 });
 router.post('/create', ensureAuthenticated, function(req, res){
-    if (!Project.isUserAllowToAdministrate(project, req.user)) res.sendStatus(403);
+    if (!req.user.isSuperAdmin) res.sendStatus(403);
 
     var name = req.body.name;
     var photo = req.body.photo;
