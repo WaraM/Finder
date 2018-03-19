@@ -31,6 +31,38 @@ router.get('/:id', ensureAuthenticated, function(req, res){
     );
 });
 
+router.put('/:id', ensureAuthenticated, function(req, res){
+	Plan.findOne({_id: req.params.id},
+        function(err, plan){
+            if (err) throw err;
+            if (plan == null) return res.sendStatus(404);
+            if (!req.user.isSuperAdmin) {
+
+                var name = req.body.name;
+                var photo = req.body.photo;
+
+                req.checkBody('name', 'Name is required').notEmpty();
+                req.checkBody('photo', 'Photo is required').notEmpty();
+
+                var errors = req.validationErrors();
+                if (errors){
+                    return res.sendStatus(400);
+                } else {
+                    plan.name = name;
+                    plan.photo = photo;
+
+                    plan.save(function(err){
+                        if (err) throw err;
+                    });
+                    return res.sendStatus(204);
+                }
+            } else {
+                return res.sendStatus(403);
+            }
+        }
+    );
+});
+
 router.delete('/:id', ensureAuthenticated, function(req, res){
     Plan.findOne({_id: req.params.id},
         function(err, plan){

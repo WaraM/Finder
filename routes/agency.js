@@ -180,19 +180,32 @@ router.post('/:id/createPole', ensureAuthenticated, function(req, res) {
 });
 
 //Add a plan to an agency
-router.put('/:id/addplan/:plan', ensureAuthenticated, function(req, res) {
+router.post('/:id/createPlan', ensureAuthenticated, function(req, res) {
 	Agency.findOne({_id : req.params.id},
 		function(err, agency) {
 			if (err) throw err;
 			if (agency == null) return res.sendStatus(404);
 			if (Agency.isUserAllowToAdministrate(agency, req.user)) {
-				Plan.findOne({_id : req.params.plan},
-					function(err,plan) {
-						if (err) throw err;
-                        if (plan == null) return res.sendStatus(404);
-                        Agency.addPlan(agency, plan);
+                var name = req.body.name;
+                var photo = req.body.photo;
+
+                req.checkBody('name', 'Name is required').notEmpty();
+                req.checkBody('photo', 'Photo is required').notEmpty();
+
+                var errors = req.validationErrors();
+                if (errors){
+                    res.sendStatus(400);
+                } else {
+                    var newPlan = new Plan({
+                        name: name,
+                        photo: photo
                     });
-                res.sendStatus(204);
+                    Plan.createPlan(newPlan, function(err, plan){
+                        if (err) throw err;
+                    });
+                    Agency.addPlan(agency, plan);
+                    res.status(201).send({plan: newPlan._id});
+                }
 			} else {
                 res.sendStatus(403);
             }

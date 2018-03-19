@@ -112,7 +112,7 @@ router.put('/:id/assign/:user', ensureAuthenticated, function(req, res) {
 });
 
 //Add a collaborator to a project
-router.put('/:id/addcollaborator/:user', ensureAuthenticated, function(req, res) {
+router.put('/:id/addCollaborator/:user', ensureAuthenticated, function(req, res) {
 	Project.findOne({_id : req.params.id},
 		function(err, project) {
 			if (err) throw err;
