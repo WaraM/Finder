@@ -38,7 +38,7 @@ router.delete('/:id', ensureAuthenticated, function(req, res){
             if (err) throw err;
             if (pole == null) return res.sendStatus(204);
 
-            if (req.user.isSuperAdmin) {
+            if (Pole.isUserAllowToAdministrate(pole, req.user)) {
                 Pole.remove(pole, function(err, pole) {
                     if (err) throw err;
                 });
@@ -86,8 +86,28 @@ router.put('/:id', ensureAuthenticated, function(req, res) {
     );
 });
 
+//Add a user as pole administrator
+router.put('/:id/assign/:user', ensureAuthenticated, function(req, res) {
+    if (Pole.isUserAllowToAdministrate(pole, req.user)) {
+        Pole.findOne({_id : req.params.id},
+            function(err, pole) {
+                if (err) throw err;
+                if (pole == null) return res.sendStatus(404);
+                User.findOne({_id : req.params.user},
+                    function(err, user) {
+                        if (err) throw err;
+                        if (user == null) return res.sendStatus(404);
+                        Pole.addAdministrator(pole, user);
+                    });
+            });
+        res.sendStatus(204);
+    } else {
+        res.sendStatus(403);
+    }
+});
+
 //Add a project to a pole
-router.put('/:id/assign/:project', ensureAuthenticated, function(req, res) {
+router.put('/:id/addproject/:project', ensureAuthenticated, function(req, res) {
 	Pole.findOne({_id : req.params.id},
 		function(err, pole) {
 			if (err) throw err;
@@ -107,7 +127,7 @@ router.put('/:id/assign/:project', ensureAuthenticated, function(req, res) {
 });
 
 router.post('/create', ensureAuthenticated, function(req, res){
-    if (!req.user.isSuperAdmin) res.sendStatus(403);
+    if (!Pole.isUserAllowToAdministrate(pole, req.user)) res.sendStatus(403);
 
     var name = req.body.name;
     var desc = req.body.description;

@@ -37,7 +37,7 @@ router.delete('/:id', ensureAuthenticated, function(req, res){
             if (err) throw err;
             if (project == null) return res.sendStatus(204);
 
-            if (req.user.isSuperAdmin) {
+            if (Project.isUserAllowToAdministrate(project, req.user)) {
                 Project.remove(project, function(err, project) {
                     if (err) throw err;
                 });
@@ -49,8 +49,80 @@ router.delete('/:id', ensureAuthenticated, function(req, res){
     );
 });
 
+router.put('/:id', ensureAuthenticated, function(req, res) {
+    Project.findOne({_id: req.params.id},
+        function(err, project){
+            if (err) throw err;
+            if (project == null) return res.sendStatus(404);
+
+            if (Project.isUserAllowToAdministrate(project, req.user)) {
+
+                var name = req.body.name;
+                var photo = req.body.photo;
+
+                req.checkBody('name', 'Name is required').notEmpty();
+                req.checkBody('photo', 'Photo is required').notEmpty();
+
+                var errors = req.validationErrors();
+                if (errors){
+                    return res.sendStatus(400);
+                } else {
+                    project.name = name;
+                    project.photo = "test";
+
+                    project.save(function(err){
+                        if (err) throw err;
+                    });
+                    return res.sendStatus(204);
+                }
+            } else {
+                return res.sendStatus(401);
+            }
+        }
+    );
+});
+
+//Add a user as project administrator
+router.put('/:id/assign/:user', ensureAuthenticated, function(req, res) {
+    if (Project.isUserAllowToAdministrate(project, req.user)) {
+        Project.findOne({_id : req.params.id},
+            function(err, project) {
+                if (err) throw err;
+                if (project == null) return res.sendStatus(404);
+                User.findOne({_id : req.params.user},
+                    function(err, user) {
+                        if (err) throw err;
+                        if (user == null) return res.sendStatus(404);
+                        Project.addAdministrator(project, user);
+                    });
+            });
+        res.sendStatus(204);
+    } else {
+        res.sendStatus(403);
+    }
+});
+
+//Add a collaborator to a project
+router.put('/:id/addcollaborator/:user', ensureAuthenticated, function(req, res) {
+	Project.findOne({_id : req.params.id},
+		function(err, project) {
+			if (err) throw err;
+			if (project == null) return res.sendStatus(404);
+			if (project.administeredBy.contains(req.user)) {
+				User.findOne({_id : req.params.user},
+					function(err,user) {
+						if (err) throw err;
+                        if (user == null) return res.sendStatus(404);
+                        Project.addCollaborator(project, user);
+                    });
+                res.sendStatus(204);
+			} else {
+                res.sendStatus(403);
+            }
+        });
+});
 router.post('/create', ensureAuthenticated, function(req, res){
-    if (!req.user.isSuperAdmin) res.sendStatus(403);
+    if (!Project.isUserAllowToAdministrate(project, req.user)) res.sendStatus(403);
 
     var name = req.body.name;
     var photo = req.body.photo;

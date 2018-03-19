@@ -4,7 +4,7 @@ var router = express.Router();
 var Agency = require('../models/Agency');
 var User = require('../models/User');
 var Pole = require('../models/Pole');
-var Plan = require('..models/Plan');
+var Plan = require('../models/Plan');
 
 function ensureAuthenticated(req, res, next){
     if(req.isAuthenticated()) {
@@ -123,7 +123,7 @@ router.put('/:id/assign/:user', ensureAuthenticated, function(req, res) {
 });
 
 //Add a pole to an agency
-router.put('/:id/assign/:pole', ensureAuthenticated, function(req, res) {
+router.put('/:id/addpole/:pole', ensureAuthenticated, function(req, res) {
 	Agency.findOne({_id : req.params.id},
 		function(err, agency) {
 			if (err) throw err;
@@ -143,7 +143,7 @@ router.put('/:id/assign/:pole', ensureAuthenticated, function(req, res) {
 });
 
 //Add a plan to an agency
-router.put('/:id/assign/:plan', ensureAuthenticated, function(req, res) {
+router.put('/:id/addplan/:plan', ensureAuthenticated, function(req, res) {
 	Agency.findOne({_id : req.params.id},
 		function(err, agency) {
 			if (err) throw err;
