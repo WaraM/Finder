@@ -14,6 +14,9 @@ var PoleSchema = new mongoose.Schema({
     },
     projects: {
         type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Project'}]
+    },
+	administeredBy: {
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
     }
 });
 

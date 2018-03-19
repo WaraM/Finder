@@ -47,7 +47,7 @@ module.exports.createAgency = function(newAgency, callback){
 }
 
 module.exports.isUserAllowToAdministrate = function(agency, user){
-    return agency.administeredBy.indexOf(user._id) != -1;
+    return (agency.administeredBy.indexOf(user._id) != -1 || user.isSuperAdmin);
 }
 
 module.exports.addAdministrator = function(agency, user) {

@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var Pole = require('../models/Pole');
+var Project = require('../models/Project');
 
 function ensureAuthenticated(req, res, next) {
     if(req.isAuthenticated()) {
@@ -47,6 +48,62 @@ router.delete('/:id', ensureAuthenticated, function(req, res){
             }
         }
     );
+});
+
+router.put('/:id', ensureAuthenticated, function(req, res) {
+    Pole.findOne({_id: req.params.id},
+        function(err, pole){
+            if (err) throw err;
+            if (pole == null) return res.sendStatus(404);
+
+            if (Pole.isUserAllowToAdministrate(pole, req.user)) {
+
+                var name = req.body.name;
+                var description = req.body.description;
+                var photo = req.body.photo;
+
+                req.checkBody('name', 'Name is required').notEmpty();
+                req.checkBody('description', 'Description is required').notEmpty();
+                req.checkBody('photo', 'Photo is required').notEmpty();
+
+                var errors = req.validationErrors();
+                if (errors){
+                    return res.sendStatus(400);
+                } else {
+                    pole.name = name;
+                    pole.fonction = fonction;
+                    pole.photo = "test";
+
+                    pole.save(function(err){
+                        if (err) throw err;
+                    });
+                    return res.sendStatus(204);
+                }
+            } else {
+                return res.sendStatus(401);
+            }
+        }
+    );
+});
+
+//Add a project to a pole
+router.put('/:id/assign/:project', ensureAuthenticated, function(req, res) {
+	Pole.findOne({_id : req.params.id},
+		function(err, pole) {
+			if (err) throw err;
+			if (pole == null) return res.sendStatus(404);
+			if (pole.administeredBy.contains(req.user)) {
+				Project.findOne({_id : req.params.project},
+					function(err,project) {
+						if (err) throw err;
+                        if (project == null) return res.sendStatus(404);
+                        Pole.addProject(pole, project);
+                    });
+                res.sendStatus(204);
+			} else {
+                res.sendStatus(403);
+            }
+        });
 });
 
 router.post('/create', ensureAuthenticated, function(req, res){

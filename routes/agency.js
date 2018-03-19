@@ -40,7 +40,7 @@ router.delete('/:id', ensureAuthenticated, function(req, res){
             if (err) throw err;
             if (agency == null) return res.sendStatus(204);
 
-            if (Agency.isUserAllowToAdministrate(agency, req.user) || req.user.isSuperAdmin) {
+            if (Agency.isUserAllowToAdministrate(agency, req.user)) {
                 Agency.remove(agency, function(err, agency) {
                     if (err) throw err;
                 });
@@ -58,7 +58,7 @@ router.put('/:id', ensureAuthenticated, function(req, res) {
             if (err) throw err;
             if (agency == null) return res.sendStatus(404);
 
-            if (Agency.isUserAllowToAdministrate(agency, req.user) || req.user.isSuperAdmin) {
+            if (Agency.isUserAllowToAdministrate(agency, req.user)) {
 
                 var name = req.body.name;
                 var fonction = req.body.fonction;
@@ -128,7 +128,7 @@ router.put('/:id/assign/:pole', ensureAuthenticated, function(req, res) {
 		function(err, agency) {
 			if (err) throw err;
 			if (agency == null) return res.sendStatus(404);
-			if (agency.administeredBy.contains(req.user) || req.user.isSuperAdmin) {
+			if (agency.administeredBy.contains(req.user)) {
 				Pole.findOne({_id : req.params.pole},
 					function(err,pole) {
 						if (err) throw err;
@@ -148,7 +148,7 @@ router.put('/:id/assign/:plan', ensureAuthenticated, function(req, res) {
 		function(err, agency) {
 			if (err) throw err;
 			if (agency == null) return res.sendStatus(404);
-			if (agency.administeredBy.contains(req.user) || req.user.isSuperAdmin) {
+			if (agency.administeredBy.contains(req.user)) {
 				Plan.findOne({_id : req.params.plan},
 					function(err,plan) {
 						if (err) throw err;
@@ -161,6 +161,7 @@ router.put('/:id/assign/:plan', ensureAuthenticated, function(req, res) {
             }
         });
 });
+
 router.post('/create', ensureAuthenticated, function(req, res){
     if (!req.user.isSuperAdmin) res.sendStatus(403);
 
