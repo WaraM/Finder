@@ -54,3 +54,8 @@ module.exports.addAdministrator = function(agency, user) {
 	agency.administeredBy.push(user);
     agency.save();
 }
+
+module.exports.addPole = function(agency, pole) {
+	agency.poles.push(pole);
+	agency.save();
+}

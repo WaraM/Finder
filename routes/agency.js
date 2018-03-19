@@ -3,6 +3,7 @@ var router = express.Router();
 
 var Agency = require('../models/Agency');
 var User = require('../models/User');
+var Pole = require('../models/Pole');
 
 function ensureAuthenticated(req, res, next){
     if(req.isAuthenticated()) {
@@ -100,6 +101,7 @@ router.put('/:id', ensureAuthenticated, function(req, res) {
     );
 });
 
+//Add a user as agency administrator
 router.put('/:id/assign/:user', ensureAuthenticated, function(req, res) {
     if (req.user.isSuperAdmin) {
         Agency.findOne({_id : req.params.id},
@@ -111,14 +113,32 @@ router.put('/:id/assign/:user', ensureAuthenticated, function(req, res) {
                         if (err) throw err;
                         if (user == null) return res.sendStatus(404);
                         Agency.addAdministrator(agency, user);
-                    }
-                );
-            }
-        );
+                    });
+            });
         res.sendStatus(204);
     } else {
         res.sendStatus(403);
     }
+});
+
+//Add a pole to an agency
+router.put('/:id/assign/:pole', ensureAuthenticated, function(req, res) {
+	Agency.findOne({_id : req.params.id},
+		function(err, agency) {
+			if (err) throw err;
+			if (agency == null) return res.sendStatus(404);
+			if (agency.administeredBy.contains(req.user) || req.user.isSuperAdmin) {
+				Pole.findOne({_id : req.params.pole},
+					function(err,pole) {
+						if (err) throw err;
+                        if (pole == null) return res.sendStatus(404);
+                        Agency.addPole(agency, pole);
+                    });
+                res.sendStatus(204);
+			} else {
+                res.sendStatus(403);
+            }
+        });
 });
 
 router.post('/create', ensureAuthenticated, function(req, res){
