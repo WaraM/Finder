@@ -59,3 +59,8 @@ module.exports.addPole = function(agency, pole) {
 	agency.poles.push(pole);
 	agency.save();
 }
+
+module.exports.addPlan = function(agency, plan) {
+    agency.plans.push(plan);
+    agency.save();
+}

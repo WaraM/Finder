@@ -4,6 +4,7 @@ var router = express.Router();
 var Agency = require('../models/Agency');
 var User = require('../models/User');
 var Pole = require('../models/Pole');
+var Plan = require('..models/Plan');
 
 function ensureAuthenticated(req, res, next){
     if(req.isAuthenticated()) {
@@ -141,6 +142,25 @@ router.put('/:id/assign/:pole', ensureAuthenticated, function(req, res) {
         });
 });
 
+//Add a plan to an agency
+router.put('/:id/assign/:plan', ensureAuthenticated, function(req, res) {
+	Agency.findOne({_id : req.params.id},
+		function(err, agency) {
+			if (err) throw err;
+			if (agency == null) return res.sendStatus(404);
+			if (agency.administeredBy.contains(req.user) || req.user.isSuperAdmin) {
+				Plan.findOne({_id : req.params.plan},
+					function(err,plan) {
+						if (err) throw err;
+                        if (plan == null) return res.sendStatus(404);
+                        Agency.addPlan(agency, plan);
+                    });
+                res.sendStatus(204);
+			} else {
+                res.sendStatus(403);
+            }
+        });
+});
 router.post('/create', ensureAuthenticated, function(req, res){
     if (!req.user.isSuperAdmin) res.sendStatus(403);
 
