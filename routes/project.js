@@ -25,8 +25,17 @@ router.get('/:id', ensureAuthenticated, function(req, res){
         function(err, project){
             if (err) throw err;
             if (project == null) return res.sendStatus(404);
-
             return res.json(project);
+        }
+    );
+});
+
+router.get('/:id/collaborators', ensureAuthenticated, function(req, res){
+    return Project.findOne({_id: req.params.id},
+        function(err, project){
+            if (err) throw err;
+            if (project == null) return res.sendStatus(404);
+            return res.json(project.collaborators);
         }
     );
 });
@@ -114,6 +123,7 @@ router.put('/:id/addcollaborator/:user', ensureAuthenticated, function(req, res)
 						if (err) throw err;
                         if (user == null) return res.sendStatus(404);
                         Project.addCollaborator(project, user);
+                        User.addProject(user, project);
                     });
                 res.sendStatus(204);
 			} else {

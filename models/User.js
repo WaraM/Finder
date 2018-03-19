@@ -33,6 +33,12 @@ var UserSchema = new mongoose.Schema({
     isSuperAdmin: {
 	    type: Boolean,
         default: false
+    },
+    poles: {
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Pole'}]
+    },
+    projects: {
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Project'}]
     }
 });
 
@@ -61,4 +67,14 @@ module.exports.comparePassword = function(candidatePassword, hash, callback){
     	if(err) throw err;
     	callback(null, isMatch);
 	});
+}
+
+module.exports.addPole = function(user, pole) {
+	user.poles.push(pole);
+	user.save();
+}
+
+module.exports.addProject = function(user, project) {
+	user.projects.push(project);
+	user.save();
 }

@@ -31,6 +31,27 @@ router.get('/:id', ensureAuthenticated, function(req, res){
     );
 });
 
+router.get('/:id/projects', ensureAuthenticated, function(req, res){
+    return User.findOne({_id: req.params.id},
+        function(err, user){
+            if (err) throw err;
+            if (user == null) return res.sendStatus(404);
+            return res.json(user);
+        }
+    );
+});
+
+router.get('/:id/poles', ensureAuthenticated, function(req, res){
+    return User.findOne({_id: req.params.id},
+        function(err, user){
+            if (err) throw err;
+            if (user == null) return res.sendStatus(404);
+
+            return res.json(user);
+        }
+    );
+});
+
 router.delete('/:id', ensureAuthenticated, function(req, res){
     User.findOne({_id: req.params.id},
         function(err, user){

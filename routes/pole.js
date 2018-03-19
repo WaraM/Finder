@@ -26,8 +26,17 @@ router.get('/:id', ensureAuthenticated, function(req, res){
         function(err, pole){
             if (err) throw err;
             if (pole == null) return res.sendStatus(404);
-
             return res.json(pole);
+        }
+    );
+});
+
+router.get('/:id/projects', ensureAuthenticated, function(req, res){
+    return Pole.findOne({_id: req.params.id},
+        function(err, pole){
+            if (err) throw err;
+            if (pole == null) return res.sendStatus(404);
+            return res.json(pole.projects);
         }
     );
 });

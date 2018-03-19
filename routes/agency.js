@@ -34,6 +34,26 @@ router.get('/:id', ensureAuthenticated, function(req, res){
      );
 });
 
+router.get('/:id/poles',ensureAuthenticated, function(req, res){
+    return Agency.findOne({_id: req.params.id},
+        function(err, agency){
+            if (err) throw err;
+            if (agency == null) return res.sendStatus(404);
+            return res.json(agency.poles);
+        }
+     );
+});
+
+router.get('/:id/plans',ensureAuthenticated, function(req, res){
+    return Agency.findOne({_id: req.params.id},
+        function(err, agency){
+            if (err) throw err;
+            if (agency == null) return res.sendStatus(404);
+            return res.json(agency.plans);
+        }
+     );
+});
+
 router.delete('/:id', ensureAuthenticated, function(req, res){
     Agency.findOne({_id: req.params.id},
         function(err, agency){
