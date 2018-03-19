@@ -76,7 +76,7 @@ router.put('/:id', ensureAuthenticated, function(req, res) {
                     return res.sendStatus(204);
                 }
             } else {
-                return res.sendStatus(401);
+                return res.sendStatus(403);
             }
         }
     );

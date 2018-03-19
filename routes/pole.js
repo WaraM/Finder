@@ -71,8 +71,8 @@ router.put('/:id', ensureAuthenticated, function(req, res) {
                     return res.sendStatus(400);
                 } else {
                     pole.name = name;
-                    pole.fonction = fonction;
-                    pole.photo = "test";
+                    pole.description = description;
+                    pole.photo = photo;
 
                     pole.save(function(err){
                         if (err) throw err;
@@ -80,7 +80,7 @@ router.put('/:id', ensureAuthenticated, function(req, res) {
                     return res.sendStatus(204);
                 }
             } else {
-                return res.sendStatus(401);
+                return res.sendStatus(403);
             }
         }
     );
