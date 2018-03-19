@@ -59,6 +59,13 @@ app.use(expressValidator({
     }
 }));
 
+//
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 ///Set routes
 app.use('/', index);
 app.use('/user', users);
@@ -72,4 +79,3 @@ app.set('port', (process.env.PORT || 2727));
 app.listen(app.get('port'), function() {
     console.log('Server started on port ' + app.get('port'));
 });
-
