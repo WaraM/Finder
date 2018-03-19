@@ -131,28 +131,5 @@ router.put('/:id/addcollaborator/:user', ensureAuthenticated, function(req, res)
             }
         });
 });
-router.post('/create', ensureAuthenticated, function(req, res){
-    if (!req.user.isSuperAdmin) res.sendStatus(403);
-
-    var name = req.body.name;
-    var photo = req.body.photo;
-
-    req.checkBody('name', 'Name is required').notEmpty();
-    req.checkBody('photo', 'Photo is required').notEmpty();
-
-    var errors = req.validationErrors();
-    if (errors){
-        res.sendStatus(400);
-    } else {
-        var newProject = new Project({
-            name: name,
-            photo: photo
-        });
-        Project.createProject(newProject, function(err, project){
-            if (err) throw err;
-        });
-        res.status(201).send({project: newProject._id});
-    }
-});
 
 module.exports = router;

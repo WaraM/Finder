@@ -143,19 +143,36 @@ router.put('/:id/assign/:user', ensureAuthenticated, function(req, res) {
 });
 
 //Add a pole to an agency
-router.put('/:id/addpole/:pole', ensureAuthenticated, function(req, res) {
+router.post('/:id/createPole', ensureAuthenticated, function(req, res) {
 	Agency.findOne({_id : req.params.id},
 		function(err, agency) {
 			if (err) throw err;
 			if (agency == null) return res.sendStatus(404);
 			if (Agency.isUserAllowToAdministrate(agency, req.user)) {
-				Pole.findOne({_id : req.params.pole},
-					function(err,pole) {
-						if (err) throw err;
-                        if (pole == null) return res.sendStatus(404);
-                        Agency.addPole(agency, pole);
-                    });
-                res.sendStatus(204);
+				var name = req.body.name;
+			    var desc = req.body.description;
+			    var photo = req.body.photo;
+
+			    req.checkBody('name', 'Name is required').notEmpty();
+			    req.checkBody('description', 'Description is required').notEmpty();
+			    req.checkBody('photo', 'Photo is required').notEmpty();
+
+			    var errors = req.validationErrors();
+			    if (errors){
+			        res.sendStatus(400);
+			    } else {
+			        var newPole = new Pole({
+			            name: name,
+			            description: desc,
+			            photo: photo
+			        });
+					newPole.administeredBy.push(req.user);
+			        Pole.createPole(newPole, function(err, pole){
+			            if (err) throw err;
+			        });
+                    Agency.addPole(agency, pole);
+					res.status(201).send({pole: newPole._id});
+                }
 			} else {
                 res.sendStatus(403);
             }

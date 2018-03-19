@@ -9,14 +9,19 @@ var mongoose = require('mongoose');
 
 //Label Schema
 var LabelSchema = mongoose.Schema({
-    code: {
-        type: String,
-        index: true
-    },
-    positionX: {
+    name: {
+		type : String
+	},
+	type: {
         type: Number
     },
-    positionY: {
+	object: {
+		type: String
+	},
+    posX: {
+        type: Number
+    },
+    posY: {
         type: Number
     }
 });
