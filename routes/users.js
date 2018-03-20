@@ -59,17 +59,18 @@ router.put('/:id', ensureAuthenticated, function(req, res) {
             if (user == null) return res.sendStatus(404);
 
             if (user == req.user || req.user.isSuperAdmin) {
-
+                var newPass = req.body.password;
                 var name = req.body.name;
                 var email = req.body.email;
                 var errors = req.validationErrors();
                 if (errors){
                     return res.sendStatus(400);
                 } else {
+                    user.password = newPass;
                     user.name = name;
                     user.email = email;
 
-                    project.save(function(err){
+                    user.save(function(err){
                         if (err) throw err;
                     });
                     return res.sendStatus(204);
