@@ -52,6 +52,35 @@ router.get('/:id/poles', ensureAuthenticated, function(req, res){
     );
 });
 
+router.put('/:id', ensureAuthenticated, function(req, res) {
+    User.findOne({_id: req.params.id},
+        function(err, user){
+            if (err) throw err;
+            if (user == null) return res.sendStatus(404);
+
+            if (user == req.user || req.user.isSuperAdmin) {
+
+                var name = req.body.name;
+                var email = req.body.email;
+                var errors = req.validationErrors();
+                if (errors){
+                    return res.sendStatus(400);
+                } else {
+                    user.name = name;
+                    user.email = email;
+
+                    project.save(function(err){
+                        if (err) throw err;
+                    });
+                    return res.sendStatus(204);
+                }
+            } else {
+                return res.sendStatus(403);
+            }
+        }
+    );
+});
+
 router.delete('/:id', ensureAuthenticated, function(req, res){
     User.findOne({_id: req.params.id},
         function(err, user){
