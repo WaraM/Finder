@@ -116,7 +116,7 @@ router.put('/:id/addCollaborator/:user', ensureAuthenticated, function(req, res)
 		function(err, project) {
 			if (err) throw err;
 			if (project == null) return res.sendStatus(404);
-			if (project.administeredBy.contains(req.user)) {
+			if (Project.isUserAllowToAdministrate(project, req.user)) {
 				User.findOne({_id : req.params.user},
 					function(err,user) {
 						if (err) throw err;
