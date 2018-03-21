@@ -203,7 +203,7 @@ router.post('/:id/createPlan', ensureAuthenticated, function(req, res) {
                     Plan.createPlan(newPlan, function(err, plan){
                         if (err) throw err;
                     });
-                    Agency.addPlan(agency, plan);
+                    Agency.addPlan(agency, newPlan);
                     res.status(201).send({plan: newPlan._id});
                 }
 			} else {
