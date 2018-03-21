@@ -121,7 +121,7 @@ router.post('/:id/createProject', ensureAuthenticated, function(req, res) {
 		function(err, pole) {
 			if (err) throw err;
 			if (pole == null) return res.sendStatus(404);
-			if (pole.administeredBy.contains(req.user)) {
+			if (Pole.isUserAllowToAdministrate(pole, req.user)) {
 				var name = req.body.name;
 			    var photo = req.body.photo;
 
