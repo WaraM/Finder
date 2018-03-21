@@ -75,7 +75,7 @@ app.use('/agency', agency);
 app.use('/project', project);
 app.use('/pole', pole);
 app.use('/plan', plan);
-app.use('/label, label);
+app.use('/label', label);
 
 //Set Port
 app.set('port', (process.env.PORT || 2727));
