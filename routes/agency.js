@@ -170,7 +170,7 @@ router.post('/:id/createPole', ensureAuthenticated, function(req, res) {
 			        Pole.createPole(newPole, function(err, pole){
 			            if (err) throw err;
 			        });
-                    Agency.addPole(agency, pole);
+                    Agency.addPole(agency, newPole);
 					res.status(201).send({pole: newPole._id});
                 }
 			} else {

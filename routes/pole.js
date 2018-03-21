@@ -139,7 +139,7 @@ router.post('/:id/createProject', ensureAuthenticated, function(req, res) {
 			        Project.createProject(newProject, function(err, project){
 			            if (err) throw err;
 			        });
-					Pole.addProject(pole, project);
+					Pole.addProject(pole, newProject);
 			        res.status(201).send({project: newProject._id});
 			    }
 			} else {
