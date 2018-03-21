@@ -19,7 +19,7 @@ var agency = require('./routes/agency.js');
 var project = require('./routes/project.js');
 var pole = require('./routes/pole.js');
 var plan = require('./routes/plan.js');
-var label = require('./routes/label.js');
+//var label = require('./routes/label.js');
 
 // init
 var app = express();
@@ -75,7 +75,7 @@ app.use('/agency', agency);
 app.use('/project', project);
 app.use('/pole', pole);
 app.use('/plan', plan);
-app.use('/label', label);
+//app.use('/label', label);
 
 //Set Port
 app.set('port', (process.env.PORT || 2727));
