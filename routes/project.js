@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var Project = require('../models/Project');
+var User = require('../models/User');
 
 function ensureAuthenticated(req, res, next) {
     if(req.isAuthenticated()) {
