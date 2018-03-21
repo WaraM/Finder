@@ -93,22 +93,21 @@ router.put('/:id', ensureAuthenticated, function(req, res) {
 
 //Add a user as project administrator
 router.put('/:id/assign/:user', ensureAuthenticated, function(req, res) {
-    if (Project.isUserAllowToAdministrate(project, req.user)) {
-        Project.findOne({_id : req.params.id},
-            function(err, project) {
-                if (err) throw err;
-                if (project == null) return res.sendStatus(404);
-                User.findOne({_id : req.params.user},
-                    function(err, user) {
-                        if (err) throw err;
-                        if (user == null) return res.sendStatus(404);
-                        Project.addAdministrator(project, user);
-                    });
-            });
-        res.sendStatus(204);
-    } else {
-        res.sendStatus(403);
-    }
+    Project.findOne({_id : req.params.id},
+        function(err, project) {
+            if (err) throw err;
+            if (project == null) return res.sendStatus(404);
+			if (Project.isUserAllowToAdministrate(project, req.user)) {
+				User.findOne({_id : req.params.user},
+					function(err, user) {
+						if (err) throw err;
+						if (user == null) return res.sendStatus(404);
+						Project.addAdministrator(project, user);
+					});
+			res.sendStatus(204);
+	} else {
+		res.sendStatus(403);
+	}});
 });
 
 //Add a collaborator to a project
